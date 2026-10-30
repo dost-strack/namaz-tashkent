@@ -5,53 +5,224 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Namaz Tashkent</title>
+
 <style>
 *{box-sizing:border-box}
+
 body{
- margin:0;background:#061c17;color:#f5e8c5;
- font-family:Arial,sans-serif;padding:24px;
+ margin:0;
+ background:#061c17;
+ color:#f5e8c5;
+ font-family:Arial,sans-serif;
+ padding:24px;
 }
+
 .container{max-width:650px;margin:auto}
-header{display:flex;justify-content:space-between;align-items:center}
+
+header{
+ display:flex;
+ justify-content:space-between;
+ align-items:center
+}
+
 h1{color:#e6c477;letter-spacing:3px}
-.city{border:1px solid #a8894d;padding:9px 14px;border-radius:20px}
+
+.city{
+ border:1px solid #a8894d;
+ padding:9px 14px;
+ border-radius:20px
+}
+
 .hero{
- text-align:center;margin-top:35px;padding:30px 15px;
- border:1px solid #806b3e;border-radius:22px;
+ text-align:center;
+ margin-top:35px;
+ padding:30px 15px;
+ border:1px solid #806b3e;
+ border-radius:22px;
  background:linear-gradient(145deg,#123c2e,#081d18);
 }
+
 .moon{font-size:48px}
+
 .hero h2{font-size:17px;font-weight:normal}
-#countdown{font-size:42px;color:#f0ce80;font-weight:bold;margin:20px 0}
+
+#countdown{
+ font-size:42px;
+ color:#f0ce80;
+ font-weight:bold;
+ margin:20px 0
+}
+
 #next{font-size:23px;color:#f0ce80}
+
 .card{
- margin-top:25px;background:#102b22;
- border:1px solid #345344;border-radius:18px;padding:20px;
+ margin-top:25px;
+ background:#102b22;
+ border:1px solid #345344;
+ border-radius:18px;
+ padding:20px;
 }
+
 .prayer{
- display:flex;justify-content:space-between;
- padding:16px 4px;border-bottom:1px solid #294438;
+ display:flex;
+ justify-content:space-between;
+ padding:16px 4px;
+ border-bottom:1px solid #294438;
 }
+
 .prayer:last-child{border:0}
 .active{color:#f2ce7e}
+
 .week-days{
- display:flex;gap:8px;overflow-x:auto;padding:8px 0 14px;
+ display:flex;
+ gap:8px;
+ overflow-x:auto;
+ padding:8px 0 14px;
 }
+
 .day-button{
- flex:0 0 auto;background:#173a2c;color:#f5e8c5;
- border:1px solid #45624b;border-radius:12px;
- padding:11px 13px;cursor:pointer;font-size:13px;
+ flex:0 0 auto;
+ background:#173a2c;
+ color:#f5e8c5;
+ border:1px solid #45624b;
+ border-radius:12px;
+ padding:11px 13px;
+ cursor:pointer;
+ font-size:13px;
 }
+
 .day-button.selected{
- background:#b18b45;color:#10251b;border-color:#e6c477;
+ background:#b18b45;
+ color:#10251b;
+ border-color:#e6c477;
 }
-.week-date{color:#d9bd7b;margin:4px 0 12px;font-size:14px}
-footer{text-align:center;color:#8ca99a;margin-top:25px;font-size:12px}
+
+.week-date{
+ color:#d9bd7b;
+ margin:4px 0 12px;
+ font-size:14px;
+}
+
 .loading{color:#a9b9a8;font-size:14px}
+
+/* TASBIH */
+
+.tasbih{
+ text-align:center;
+ padding:12px 5px 5px;
+}
+
+.tasbih-label{
+ color:#c6b68b;
+ font-size:14px;
+ margin-bottom:15px;
+}
+
+.tasbih-count{
+ font-size:65px;
+ font-weight:bold;
+ color:#f0ce80;
+ margin:10px 0;
+ font-variant-numeric:tabular-nums;
+}
+
+.tasbih-goal{
+ color:#9fb5a5;
+ font-size:14px;
+ margin-bottom:20px;
+}
+
+.tasbih-progress{
+ height:9px;
+ background:#203e32;
+ border-radius:20px;
+ overflow:hidden;
+ margin:15px 0 22px;
+}
+
+.tasbih-progress-fill{
+ height:100%;
+ width:0%;
+ background:linear-gradient(90deg,#a17b37,#f2d58c);
+ border-radius:20px;
+ transition:width .2s;
+}
+
+.goal-buttons{
+ display:flex;
+ justify-content:center;
+ gap:9px;
+ margin:15px 0 22px;
+}
+
+.goal-button{
+ background:#173a2c;
+ color:#f5e8c5;
+ border:1px solid #45624b;
+ border-radius:10px;
+ padding:10px 17px;
+ cursor:pointer;
+}
+
+.goal-button.selected{
+ background:#b18b45;
+ color:#10251b;
+ border-color:#e6c477;
+}
+
+.tasbih-main{
+ width:155px;
+ height:155px;
+ border-radius:50%;
+ border:3px solid #b18b45;
+ background:radial-gradient(circle,#24523d,#0b261c);
+ color:#f2ce80;
+ font-size:27px;
+ font-weight:bold;
+ cursor:pointer;
+ box-shadow:0 0 25px #b18b4530;
+ transition:transform .1s;
+}
+
+.tasbih-main:active{
+ transform:scale(.94);
+}
+
+.tasbih-actions{
+ display:flex;
+ justify-content:center;
+ gap:12px;
+ margin-top:22px;
+}
+
+.tasbih-action{
+ background:#173a2c;
+ border:1px solid #45624b;
+ color:#f5e8c5;
+ padding:11px 18px;
+ border-radius:12px;
+ cursor:pointer;
+}
+
+.tasbih-message{
+ min-height:22px;
+ margin-top:16px;
+ color:#e6c477;
+ font-size:14px;
+}
+
+footer{
+ text-align:center;
+ color:#8ca99a;
+ margin-top:25px;
+ font-size:12px;
+}
 </style>
 </head>
+
 <body>
 <div class="container">
+
 <header>
 <h1>NAMAZ</h1>
 <div class="city">📍 Tashkent</div>
@@ -66,7 +237,9 @@ footer{text-align:center;color:#8ca99a;margin-top:25px;font-size:12px}
 
 <section class="card">
 <h2>🕌 Расписание намазов</h2>
-<div id="schedule" class="loading">Загружаем расписание...</div>
+<div id="schedule" class="loading">
+Загружаем расписание...
+</div>
 </section>
 
 <section class="card">
@@ -75,10 +248,68 @@ footer{text-align:center;color:#8ca99a;margin-top:25px;font-size:12px}
 <span class="loading">Загружаем дни...</span>
 </div>
 <div id="weekDate" class="week-date"></div>
-<div id="weekSchedule" class="loading">Загружаем расписание...</div>
+<div id="weekSchedule" class="loading">
+Загружаем расписание...
+</div>
 </section>
 
-<footer>Namaz Tashkent • Prayer Times</footer>
+<!-- DIGITAL TASBIH -->
+<section class="card">
+<h2>📿 Цифровой тасбих</h2>
+
+<div class="tasbih">
+
+<div class="tasbih-label">
+Количество повторений
+</div>
+
+<div id="tasbihCount" class="tasbih-count">0</div>
+
+<div id="tasbihGoalText" class="tasbih-goal">
+Цель: 33
+</div>
+
+<div class="tasbih-progress">
+<div id="tasbihProgress"
+class="tasbih-progress-fill"></div>
+</div>
+
+<div class="goal-buttons">
+<button class="goal-button selected"
+data-goal="33">33</button>
+
+<button class="goal-button"
+data-goal="99">99</button>
+
+<button class="goal-button"
+data-goal="100">100</button>
+</div>
+
+<button id="tasbihAdd" class="tasbih-main">
++1
+</button>
+
+<div id="tasbihMessage" class="tasbih-message">
+Нажмите кнопку, чтобы начать
+</div>
+
+<div class="tasbih-actions">
+<button id="tasbihUndo" class="tasbih-action">
+↩ Назад
+</button>
+
+<button id="tasbihReset" class="tasbih-action">
+↻ Сбросить
+</button>
+</div>
+
+</div>
+</section>
+
+<footer>
+Namaz Tashkent • Prayer Times
+</footer>
+
 </div>
 
 <script>
@@ -90,11 +321,14 @@ const prayers = [
  ["xufton","Иша","🌙"]
 ];
 
-const API_URL = "https://script.google.com/macros/s/AKfycbwEh3b0b4Z5rBBWmyq3UTI8Av_TPYzrPKQtpoLDmiReGjfkO8IvaYBz1W7KRjymJ14LIA/exec";
+const API_URL =
+"https://script.google.com/macros/s/AKfycbwEh3b0b4Z5rBBWmyq3UTI8Av_TPYzrPKQtpoLDmiReGjfkO8IvaYBz1W7KRjymJ14LIA/exec";
 
 let times = {};
 let weekData = [];
 let selectedDay = 0;
+
+/* ЗАГРУЗКА JSONP */
 
 function loadJSONP(url, callbackName, onSuccess, onError) {
   window[callbackName] = function(data) {
@@ -106,8 +340,11 @@ function loadJSONP(url, callbackName, onSuccess, onError) {
   };
 
   const script = document.createElement("script");
-  script.src = url + (url.includes("?") ? "&" : "?") +
-    "callback=" + callbackName + "&t=" + Date.now();
+
+  script.src = url +
+    (url.includes("?") ? "&" : "?") +
+    "callback=" + callbackName +
+    "&t=" + Date.now();
 
   script.onerror = function() {
     delete window[callbackName];
@@ -116,6 +353,8 @@ function loadJSONP(url, callbackName, onSuccess, onError) {
 
   document.body.appendChild(script);
 }
+
+/* СЕГОДНЯ */
 
 function loadTimes() {
   loadJSONP(
@@ -141,15 +380,18 @@ function loadTimes() {
 
 function showSchedule() {
   const now = new Date();
-  const current = now.getHours() * 60 + now.getMinutes();
+  const current =
+    now.getHours() * 60 + now.getMinutes();
+
   let html = "";
 
   prayers.forEach(p => {
     const t = times[p[0]];
     if (!t) return;
 
-    const m = Number(t.slice(0,2)) * 60 +
-              Number(t.slice(3,5));
+    const m =
+      Number(t.slice(0,2)) * 60 +
+      Number(t.slice(3,5));
 
     html += `<div class="prayer ${m > current ? "active" : ""}">
       <span>${p[2]} ${p[1]}</span>
@@ -161,22 +403,29 @@ function showSchedule() {
     html || "Расписание пока недоступно.";
 }
 
+/* ОБРАТНЫЙ ОТСЧЁТ */
+
 function updateCountdown() {
   if (!Object.keys(times).length) return;
 
   const now = new Date();
-  const current = now.getHours() * 60 + now.getMinutes();
+
+  const current =
+    now.getHours() * 60 + now.getMinutes();
+
   let next = null;
 
   for (const p of prayers) {
     if (!times[p[0]]) continue;
 
     const t = times[p[0]];
-    const m = Number(t.slice(0,2)) * 60 +
-              Number(t.slice(3,5));
+
+    const m =
+      Number(t.slice(0,2)) * 60 +
+      Number(t.slice(3,5));
 
     if (m > current) {
-      next = { name: p[1], time: t };
+      next = {name:p[1],time:t};
       break;
     }
   }
@@ -184,43 +433,52 @@ function updateCountdown() {
   if (!next) {
     document.getElementById("next").textContent =
       "Все намазы на сегодня прошли";
+
     document.getElementById("countdown").textContent = "—";
     return;
   }
 
   const target = new Date();
+
   target.setHours(
     Number(next.time.slice(0,2)),
     Number(next.time.slice(3,5)),
-    0, 0
+    0,0
   );
 
-  const diff = Math.max(0, target - now);
-  const h = Math.floor(diff / 3600000);
-  const m = Math.floor(diff % 3600000 / 60000);
-  const s = Math.floor(diff % 60000 / 1000);
+  const diff = Math.max(0,target-now);
+
+  const h = Math.floor(diff/3600000);
+  const m = Math.floor(diff%3600000/60000);
+  const s = Math.floor(diff%60000/1000);
 
   document.getElementById("countdown").textContent =
-    [h,m,s].map(v => String(v).padStart(2,"0")).join(":");
+    [h,m,s].map(v =>
+      String(v).padStart(2,"0")
+    ).join(":");
 
   document.getElementById("next").textContent =
     next.name + " • " + next.time;
 }
+
+/* НЕДЕЛЬНОЕ РАСПИСАНИЕ */
 
 function loadWeek() {
   loadJSONP(
     API_URL + "?period=week",
     "namazWeekLoaded",
     function(data) {
-      if (!data.ok || !Array.isArray(data.period_table) ||
+      if (!data.ok ||
+          !Array.isArray(data.period_table) ||
           data.period_table.length === 0) {
         document.getElementById("weekSchedule").textContent =
           "Недельное расписание пока недоступно.";
         return;
       }
 
-      weekData = data.period_table.slice(0, 7);
+      weekData = data.period_table.slice(0,7);
       selectedDay = 0;
+
       showWeekDays();
       showWeekDay(0);
     },
@@ -232,16 +490,21 @@ function loadWeek() {
 }
 
 function showWeekDays() {
-  const container = document.getElementById("weekDays");
+  const container =
+    document.getElementById("weekDays");
+
   container.innerHTML = "";
 
-  weekData.forEach((day, index) => {
+  weekData.forEach((day,index) => {
     const button = document.createElement("button");
-    button.className = "day-button" +
+
+    button.className =
+      "day-button" +
       (index === selectedDay ? " selected" : "");
+
     button.textContent = day.date;
 
-    button.addEventListener("click", function() {
+    button.addEventListener("click",function() {
       selectedDay = index;
       showWeekDays();
       showWeekDay(index);
@@ -274,9 +537,91 @@ function showWeekDay(index) {
     html || "Времена для этой даты недоступны.";
 }
 
+/* ЦИФРОВОЙ ТАСБИХ */
+
+const COUNT_KEY = "namaz_tasbih_count";
+const GOAL_KEY = "namaz_tasbih_goal";
+
+let tasbihCount =
+  Number(localStorage.getItem(COUNT_KEY)) || 0;
+
+let tasbihGoal =
+  Number(localStorage.getItem(GOAL_KEY)) || 33;
+
+function saveTasbih() {
+  localStorage.setItem(COUNT_KEY,tasbihCount);
+  localStorage.setItem(GOAL_KEY,tasbihGoal);
+}
+
+function updateTasbih() {
+  document.getElementById("tasbihCount").textContent =
+    tasbihCount;
+
+  document.getElementById("tasbihGoalText").textContent =
+    "Цель: " + tasbihGoal;
+
+  const progress =
+    Math.min(100,(tasbihCount/tasbihGoal)*100);
+
+  document.getElementById("tasbihProgress").style.width =
+    progress + "%";
+
+  document.querySelectorAll(".goal-button").forEach(button => {
+    button.classList.toggle(
+      "selected",
+      Number(button.dataset.goal) === tasbihGoal
+    );
+  });
+
+  if (tasbihCount >= tasbihGoal) {
+    document.getElementById("tasbihMessage").textContent =
+      "✨ Цель достигнута! Ма ша Аллах!";
+  } else {
+    document.getElementById("tasbihMessage").textContent =
+      "Осталось: " + (tasbihGoal-tasbihCount);
+  }
+
+  saveTasbih();
+}
+
+document.getElementById("tasbihAdd")
+.addEventListener("click",function() {
+  tasbihCount++;
+  updateTasbih();
+});
+
+document.getElementById("tasbihUndo")
+.addEventListener("click",function() {
+  if (tasbihCount > 0) {
+    tasbihCount--;
+    updateTasbih();
+  }
+});
+
+document.getElementById("tasbihReset")
+.addEventListener("click",function() {
+  if (confirm("Сбросить счётчик тасбиха?")) {
+    tasbihCount = 0;
+    updateTasbih();
+  }
+});
+
+document.querySelectorAll(".goal-button")
+.forEach(button => {
+  button.addEventListener("click",function() {
+    tasbihGoal = Number(this.dataset.goal);
+    updateTasbih();
+  });
+});
+
+updateTasbih();
+
+/* ЗАПУСК */
+
 loadTimes();
 loadWeek();
-setInterval(updateCountdown, 1000);
+
+setInterval(updateCountdown,1000);
 </script>
 </body>
 </html>
