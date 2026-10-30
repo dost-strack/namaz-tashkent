@@ -60,7 +60,7 @@ footer{text-align:center;color:#8ca99a;margin-top:25px;font-size:12px}
 </div>
 
 <script>
-const prayers=[
+const prayers = [
  ["bomdod","Фаджр","🌅"],
  ["peshin","Зухр","☀️"],
  ["asr","Аср","🌤"],
@@ -68,17 +68,16 @@ const prayers=[
  ["xufton","Иша","🌙"]
 ];
 
-let times={};
-
+let times = {};
 
 const API_URL = "https://script.google.com/macros/s/AKfycbwEh3b0b4Z5rBBWmyq3UTI8Av_TPYzrPKQtpoLDmiReGjfkO8IvaYBz1W7KRjymJ14LIA/exec";
 
-function loadTimes(){
+function loadTimes() {
   document.getElementById("schedule").textContent =
     "Загружаем расписание...";
 
-  window.namazDataLoaded = function(data){
-    if(!data.ok){
+  window.namazDataLoaded = function(data) {
+    if (!data.ok) {
       document.getElementById("schedule").textContent =
         "Ошибка: " + data.error;
       return;
@@ -92,7 +91,7 @@ function loadTimes(){
   const script = document.createElement("script");
   script.src = API_URL + "?callback=namazDataLoaded&t=" + Date.now();
 
-  script.onerror = function(){
+  script.onerror = function() {
     document.getElementById("schedule").textContent =
       "Не удалось получить расписание.";
   };
@@ -100,76 +99,74 @@ function loadTimes(){
   document.body.appendChild(script);
 }
 
- try{
-  const response=await fetch(
-   "https://namoz-vaqti.uz/index.php?region=toshkent&lang=ru&period=today&format=json"
+function showSchedule() {
+  const now = new Date();
+  const current = now.getHours() * 60 + now.getMinutes();
+  let html = "";
+
+  prayers.forEach(p => {
+    const t = times[p[0]];
+    if (!t) return;
+
+    const m = Number(t.slice(0,2)) * 60 +
+              Number(t.slice(3,5));
+
+    html += `<div class="prayer ${m > current ? "active" : ""}">
+      <span>${p[2]} ${p[1]}</span>
+      <b>${t}</b>
+    </div>`;
+  });
+
+  document.getElementById("schedule").innerHTML =
+    html || "Расписание пока недоступно.";
+}
+
+function updateCountdown() {
+  const now = new Date();
+  const current = now.getHours() * 60 + now.getMinutes();
+  let next = null;
+
+  for (const p of prayers) {
+    if (!times[p[0]]) continue;
+
+    const t = times[p[0]];
+    const m = Number(t.slice(0,2)) * 60 +
+              Number(t.slice(3,5));
+
+    if (m > current) {
+      next = { name: p[1], time: t };
+      break;
+    }
+  }
+
+  if (!next) {
+    document.getElementById("next").textContent =
+      "Все намазы на сегодня прошли";
+    document.getElementById("countdown").textContent = "—";
+    return;
+  }
+
+  const target = new Date();
+  target.setHours(
+    Number(next.time.slice(0,2)),
+    Number(next.time.slice(3,5)),
+    0, 0
   );
-  const data=await response.json();
-  times=data.today.times;
-  showSchedule();
-  updateCountdown();
- }catch(e){
-  document.getElementById("schedule").textContent=
-   "Не удалось загрузить расписание. Попробуйте обновить страницу.";
- }
-}
 
-function showSchedule(){
- const now=new Date();
- const current=now.getHours()*60+now.getMinutes();
- let html="";
+  const diff = Math.max(0, target - now);
+  const h = Math.floor(diff / 3600000);
+  const m = Math.floor(diff % 3600000 / 60000);
+  const s = Math.floor(diff % 60000 / 1000);
 
- prayers.forEach(p=>{
-  const t=times[p[0]];
-  if(!t)return;
-  const m=Number(t.slice(0,2))*60+Number(t.slice(3,5));
-  html+=`<div class="prayer ${m>current?"active":""}">
-  <span>${p[2]} ${p[1]}</span><b>${t}</b></div>`;
- });
+  document.getElementById("countdown").textContent =
+    [h,m,s].map(v => String(v).padStart(2,"0")).join(":");
 
- document.getElementById("schedule").innerHTML=html;
-}
-
-function updateCountdown(){
- const now=new Date();
- const current=now.getHours()*60+now.getMinutes();
- let next=null;
-
- for(const p of prayers){
-  if(!times[p[0]])continue;
-  const t=times[p[0]];
-  const m=Number(t.slice(0,2))*60+Number(t.slice(3,5));
-  if(m>current){next={name:p[1],time:t,minutes:m};break;}
- }
-
- if(!next){
-  document.getElementById("next").textContent=
-   "Все намазы на сегодня прошли";
-  document.getElementById("countdown").textContent="—";
-  return;
- }
-
- const target=new Date();
- target.setHours(
-  Number(next.time.slice(0,2)),
-  Number(next.time.slice(3,5)),0,0
- );
- const diff=Math.max(0,target-now);
- const h=Math.floor(diff/3600000);
- const m=Math.floor(diff%3600000/60000);
- const s=Math.floor(diff%60000/1000);
-
- document.getElementById("countdown")=
- document.getElementById("countdown");
- document.getElementById("countdown").textContent=
- [h,m,s].map(v=>String(v).padStart(2,"0")).join(":");
- document.getElementById("next").textContent=
- next.name+" • "+next.time;
+  document.getElementById("next").textContent =
+    next.name + " • " + next.time;
 }
 
 loadTimes();
-setInterval(updateCountdown,1000);
-setInterval(loadTimes,3600000);
+setInterval(updateCountdown, 1000);
 </script>
 </body>
 </html>
