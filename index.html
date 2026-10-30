@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Namaz Tashkent</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#061c17;color:#f5e8c5;
+ font-family:Arial,sans-serif;padding:24px;
+}
+.container{max-width:650px;margin:auto}
+header{display:flex;justify-content:space-between;align-items:center}
+h1{color:#e6c477;letter-spacing:3px}
+.city{border:1px solid #a8894d;padding:9px 14px;border-radius:20px}
+.hero{
+ text-align:center;margin-top:35px;padding:30px 15px;
+ border:1px solid #806b3e;border-radius:22px;
+ background:linear-gradient(145deg,#123c2e,#081d18);
+}
+.moon{font-size:48px}
+.hero h2{font-size:17px;font-weight:normal}
+#countdown{font-size:42px;color:#f0ce80;font-weight:bold;margin:20px 0}
+#next{font-size:23px;color:#f0ce80}
+.card{
+ margin-top:25px;background:#102b22;
+ border:1px solid #345344;border-radius:18px;padding:20px;
+}
+.prayer{
+ display:flex;justify-content:space-between;
+ padding:16px 4px;border-bottom:1px solid #294438;
+}
+.prayer:last-child{border:0}
+.active{color:#f2ce7e}
+footer{text-align:center;color:#8ca99a;margin-top:25px;font-size:12px}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<h1>NAMAZ</h1>
+<div class="city">📍 Tashkent</div>
+</header>
+
+<section class="hero">
+<div class="moon">☪️</div>
+<h2>До следующего намаза</h2>
+<div id="countdown">--:--:--</div>
+<div id="next">Загрузка...</div>
+</section>
+
+<section class="card">
+<h2>🕌 Расписание намазов</h2>
+<div id="schedule">Загружаем расписание...</div>
+</section>
+
+<footer>Namaz Tashkent • Prayer Times</footer>
+</div>
+
+<script>
+const prayers=[
+ ["bomdod","Фаджр","🌅"],
+ ["peshin","Зухр","☀️"],
+ ["asr","Аср","🌤"],
+ ["shom","Магриб","🌇"],
+ ["xufton","Иша","🌙"]
+];
+
+let times={};
+
+async function loadTimes(){
+ try{
+  const response=await fetch(
+   "https://namoz-vaqti.uz/index.php?region=toshkent&lang=ru&period=today&format=json"
+  );
+  const data=await response.json();
+  times=data.today.times;
+  showSchedule();
+  updateCountdown();
+ }catch(e){
+  document.getElementById("schedule").textContent=
+   "Не удалось загрузить расписание. Попробуйте обновить страницу.";
+ }
+}
+
+function showSchedule(){
+ const now=new Date();
+ const current=now.getHours()*60+now.getMinutes();
+ let html="";
+
+ prayers.forEach(p=>{
+  const t=times[p[0]];
+  if(!t)return;
+  const m=Number(t.slice(0,2))*60+Number(t.slice(3,5));
+  html+=`<div class="prayer ${m>current?"active":""}">
+  <span>${p[2]} ${p[1]}</span><b>${t}</b></div>`;
+ });
+
+ document.getElementById("schedule").innerHTML=html;
+}
+
+function updateCountdown(){
+ const now=new Date();
+ const current=now.getHours()*60+now.getMinutes();
+ let next=null;
+
+ for(const p of prayers){
+  if(!times[p[0]])continue;
+  const t=times[p[0]];
+  const m=Number(t.slice(0,2))*60+Number(t.slice(3,5));
+  if(m>current){next={name:p[1],time:t,minutes:m};break;}
+ }
+
+ if(!next){
+  document.getElementById("next").textContent=
+   "Все намазы на сегодня прошли";
+  document.getElementById("countdown").textContent="—";
+  return;
+ }
+
+ const target=new Date();
+ target.setHours(
+  Number(next.time.slice(0,2)),
+  Number(next.time.slice(3,5)),0,0
+ );
+ const diff=Math.max(0,target-now);
+ const h=Math.floor(diff/3600000);
+ const m=Math.floor(diff%3600000/60000);
+ const s=Math.floor(diff%60000/1000);
+
+ document.getElementById("countdown")=
+ document.getElementById("countdown");
+ document.getElementById("countdown").textContent=
+ [h,m,s].map(v=>String(v).padStart(2,"0")).join(":");
+ document.getElementById("next").textContent=
+ next.name+" • "+next.time;
+}
+
+loadTimes();
+setInterval(updateCountdown,1000);
+setInterval(loadTimes,3600000);
+</script>
+</body>
+</html>
