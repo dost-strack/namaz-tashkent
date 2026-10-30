@@ -70,7 +70,36 @@ const prayers=[
 
 let times={};
 
-async function loadTimes(){
+
+const API_URL = "https://script.google.com/macros/s/AKfycbwEh3b0b4Z5rBBWmyq3UTI8Av_TPYzrPKQtpoLDmiReGjfkO8IvaYBz1W7KRjymJ14LIA/exec";
+
+function loadTimes(){
+  document.getElementById("schedule").textContent =
+    "Загружаем расписание...";
+
+  window.namazDataLoaded = function(data){
+    if(!data.ok){
+      document.getElementById("schedule").textContent =
+        "Ошибка: " + data.error;
+      return;
+    }
+
+    times = data.times;
+    showSchedule();
+    updateCountdown();
+  };
+
+  const script = document.createElement("script");
+  script.src = API_URL + "?callback=namazDataLoaded&t=" + Date.now();
+
+  script.onerror = function(){
+    document.getElementById("schedule").textContent =
+      "Не удалось получить расписание.";
+  };
+
+  document.body.appendChild(script);
+}
+
  try{
   const response=await fetch(
    "https://namoz-vaqti.uz/index.php?region=toshkent&lang=ru&period=today&format=json"
