@@ -34,7 +34,20 @@ h1{color:#e6c477;letter-spacing:3px}
 }
 .prayer:last-child{border:0}
 .active{color:#f2ce7e}
+.week-days{
+ display:flex;gap:8px;overflow-x:auto;padding:8px 0 14px;
+}
+.day-button{
+ flex:0 0 auto;background:#173a2c;color:#f5e8c5;
+ border:1px solid #45624b;border-radius:12px;
+ padding:11px 13px;cursor:pointer;font-size:13px;
+}
+.day-button.selected{
+ background:#b18b45;color:#10251b;border-color:#e6c477;
+}
+.week-date{color:#d9bd7b;margin:4px 0 12px;font-size:14px}
 footer{text-align:center;color:#8ca99a;margin-top:25px;font-size:12px}
+.loading{color:#a9b9a8;font-size:14px}
 </style>
 </head>
 <body>
@@ -53,7 +66,16 @@ footer{text-align:center;color:#8ca99a;margin-top:25px;font-size:12px}
 
 <section class="card">
 <h2>🕌 Расписание намазов</h2>
-<div id="schedule">Загружаем расписание...</div>
+<div id="schedule" class="loading">Загружаем расписание...</div>
+</section>
+
+<section class="card">
+<h2>📅 Расписание на неделю</h2>
+<div id="weekDays" class="week-days">
+<span class="loading">Загружаем дни...</span>
+</div>
+<div id="weekDate" class="week-date"></div>
+<div id="weekSchedule" class="loading">Загружаем расписание...</div>
 </section>
 
 <footer>Namaz Tashkent • Prayer Times</footer>
@@ -68,35 +90,53 @@ const prayers = [
  ["xufton","Иша","🌙"]
 ];
 
-let times = {};
-
 const API_URL = "https://script.google.com/macros/s/AKfycbwEh3b0b4Z5rBBWmyq3UTI8Av_TPYzrPKQtpoLDmiReGjfkO8IvaYBz1W7KRjymJ14LIA/exec";
 
-function loadTimes() {
-  document.getElementById("schedule").textContent =
-    "Загружаем расписание...";
+let times = {};
+let weekData = [];
+let selectedDay = 0;
 
-  window.namazDataLoaded = function(data) {
-    if (!data.ok) {
-      document.getElementById("schedule").textContent =
-        "Ошибка: " + data.error;
-      return;
+function loadJSONP(url, callbackName, onSuccess, onError) {
+  window[callbackName] = function(data) {
+    try {
+      onSuccess(data);
+    } finally {
+      delete window[callbackName];
     }
-
-    times = data.times;
-    showSchedule();
-    updateCountdown();
   };
 
   const script = document.createElement("script");
-  script.src = API_URL + "?callback=namazDataLoaded&t=" + Date.now();
+  script.src = url + (url.includes("?") ? "&" : "?") +
+    "callback=" + callbackName + "&t=" + Date.now();
 
   script.onerror = function() {
-    document.getElementById("schedule").textContent =
-      "Не удалось получить расписание.";
+    delete window[callbackName];
+    onError();
   };
 
   document.body.appendChild(script);
+}
+
+function loadTimes() {
+  loadJSONP(
+    API_URL,
+    "namazTodayLoaded",
+    function(data) {
+      if (!data.ok) {
+        document.getElementById("schedule").textContent =
+          "Ошибка: " + data.error;
+        return;
+      }
+
+      times = data.times;
+      showSchedule();
+      updateCountdown();
+    },
+    function() {
+      document.getElementById("schedule").textContent =
+        "Не удалось получить расписание.";
+    }
+  );
 }
 
 function showSchedule() {
@@ -122,6 +162,8 @@ function showSchedule() {
 }
 
 function updateCountdown() {
+  if (!Object.keys(times).length) return;
+
   const now = new Date();
   const current = now.getHours() * 60 + now.getMinutes();
   let next = null;
@@ -165,7 +207,75 @@ function updateCountdown() {
     next.name + " • " + next.time;
 }
 
+function loadWeek() {
+  loadJSONP(
+    API_URL + "?period=week",
+    "namazWeekLoaded",
+    function(data) {
+      if (!data.ok || !Array.isArray(data.period_table) ||
+          data.period_table.length === 0) {
+        document.getElementById("weekSchedule").textContent =
+          "Недельное расписание пока недоступно.";
+        return;
+      }
+
+      weekData = data.period_table.slice(0, 7);
+      selectedDay = 0;
+      showWeekDays();
+      showWeekDay(0);
+    },
+    function() {
+      document.getElementById("weekSchedule").textContent =
+        "Не удалось загрузить расписание на неделю.";
+    }
+  );
+}
+
+function showWeekDays() {
+  const container = document.getElementById("weekDays");
+  container.innerHTML = "";
+
+  weekData.forEach((day, index) => {
+    const button = document.createElement("button");
+    button.className = "day-button" +
+      (index === selectedDay ? " selected" : "");
+    button.textContent = day.date;
+
+    button.addEventListener("click", function() {
+      selectedDay = index;
+      showWeekDays();
+      showWeekDay(index);
+    });
+
+    container.appendChild(button);
+  });
+}
+
+function showWeekDay(index) {
+  const day = weekData[index];
+  if (!day) return;
+
+  document.getElementById("weekDate").textContent =
+    "📅 " + day.date;
+
+  let html = "";
+
+  prayers.forEach(p => {
+    const t = day.times && day.times[p[0]];
+    if (!t) return;
+
+    html += `<div class="prayer">
+      <span>${p[2]} ${p[1]}</span>
+      <b>${t}</b>
+    </div>`;
+  });
+
+  document.getElementById("weekSchedule").innerHTML =
+    html || "Времена для этой даты недоступны.";
+}
+
 loadTimes();
+loadWeek();
 setInterval(updateCountdown, 1000);
 </script>
 </body>
